@@ -1,0 +1,24 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * Shelter Manager plugin for Craft CMS
+ *
+ * SyncAnimals Utility Content
+ *
+ * @author    Matt Lathrom
+ * @copyright Copyright (c) 2021 Matt Lathrom
+ * @link      mlathrom.com
+ * @package   ShelterManager
+ * @since     1.0.0
+ */
+#}
+
+<h1>SyncAnimals</h1>
+
+{% set iconUrl = view.getAssetManager().getPublishedUrl('@mlathromsheltermanager/sheltermanager/assetbundles/syncanimalsutility/dist', true) ~ '/img/SyncAnimals-icon.svg' %}
+
+<img src="{{ iconUrl }}" height="64" width="64" />
+
+<p>Your Utility content goes here</p>
+
+<p>{{ someVar }}</p>

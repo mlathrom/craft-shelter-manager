@@ -1,0 +1,26 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * Shelter Manager plugin for Craft CMS 3.x
+ *
+ * Shelter Manager Settings.twig
+ *
+ * @author    Matt Lathrom
+ * @copyright Copyright (c) 2021 Matt Lathrom
+ * @link      mlathrom.com
+ * @package   ShelterManager
+ * @since     1.0.0
+ */
+#}
+
+{% import "_includes/forms" as forms %}
+
+{% do view.registerAssetBundle("mlathromsheltermanager\\sheltermanager\\assetbundles\\sheltermanager\\ShelterManagerAsset") %}
+
+{{ forms.textField({
+    label: 'Some Field',
+    instructions: 'Enter some setting here.',
+    id: 'someAttribute',
+    name: 'someAttribute',
+    value: settings['someAttribute']})
+}}

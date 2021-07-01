@@ -1,0 +1,20 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * Shelter Manager plugin for Craft CMS
+ *
+ * ShelterManagerStatus Widget Body
+ *
+ * @author    Matt Lathrom
+ * @copyright Copyright (c) 2021 Matt Lathrom
+ * @link      mlathrom.com
+ * @package   ShelterManager
+ * @since     1.0.0
+ */
+#}
+
+{% set iconUrl = view.getAssetManager().getPublishedUrl('@mlathromsheltermanager/sheltermanager/assetbundles/sheltermanagerstatuswidget/dist', true) ~ '/img/ShelterManagerStatus-icon.svg' %}
+
+<img src="{{ iconUrl }}" height="64" width="64" />
+
+<p>{{ message }}</p>

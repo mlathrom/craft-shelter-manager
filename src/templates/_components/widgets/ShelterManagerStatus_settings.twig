@@ -1,0 +1,26 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * Shelter Manager plugin for Craft CMS
+ *
+ * ShelterManagerStatus Widget Settings
+ *
+ * @author    Matt Lathrom
+ * @copyright Copyright (c) 2021 Matt Lathrom
+ * @link      mlathrom.com
+ * @package   ShelterManager
+ * @since     1.0.0
+ */
+#}
+
+{% import "_includes/forms" as forms %}
+
+{% do view.registerAssetBundle("mlathromsheltermanager\\sheltermanager\\assetbundles\\sheltermanager\\ShelterManagerAsset") %}
+
+{{ forms.textField({
+    label: 'Message',
+    instructions: 'Enter a message here.',
+    id: 'message',
+    name: 'message',
+    value: widget['message']})
+}}
