@@ -11,8 +11,8 @@
         "shelter manager"
     ],
     "support": {
-        "docs": "???",
-        "issues": "???"
+        "docs": "https://github.com/mlathrom/craft-shelter-manager",
+        "issues": "https://github.com/mlathrom/craft-shelter-manager/issues"
     },
     "license": "MIT",
     "authors": [
