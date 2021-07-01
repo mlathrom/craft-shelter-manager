@@ -2,7 +2,7 @@
     "name": "mlathrom/craft-shelter-manager",
     "description": "Adds animals from Shelter Manager to Craft CMS.",
     "type": "craft-plugin",
-    "version": "1.0.0",
+    "version": "0.0.1",
     "keywords": [
         "craft",
         "cms",
