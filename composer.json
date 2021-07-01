@@ -1,5 +1,5 @@
 {
-    "name": "mlathromsheltermanager/shelter-manager",
+    "name": "mlathrom/shelter-manager",
     "description": "Adds animals from shelter manager to Craft CMS.",
     "type": "craft-plugin",
     "version": "1.0.0",
