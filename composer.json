@@ -31,7 +31,7 @@
     },
     "autoload": {
         "psr-4": {
-          "mlathromsheltermanager\\sheltermanager\\": "src/"
+          "mlathrom\\sheltermanager\\": "src/"
         }
     },
     "extra": {
@@ -42,9 +42,9 @@
         "documentationUrl": "???",
         "changelogUrl": "???",
         "components": {
-            "getAnimals": "mlathromsheltermanager\\sheltermanager\\services\\GetAnimals",
-            "getAnimalImages": "mlathromsheltermanager\\sheltermanager\\services\\GetAnimalImages"
+            "getAnimals": "mlathrom\\sheltermanager\\services\\GetAnimals",
+            "getAnimalImages": "mlathrom\\sheltermanager\\services\\GetAnimalImages"
         },
-        "class": "mlathromsheltermanager\\sheltermanager\\ShelterManager"
+        "class": "mlathrom\\sheltermanager\\ShelterManager"
     }
 }

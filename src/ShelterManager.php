@@ -8,27 +8,32 @@
  * @copyright Copyright (c) 2021 Matt Lathrom
  */
 
-namespace mlathromsheltermanager\sheltermanager;
-
-use mlathromsheltermanager\sheltermanager\services\GetAnimals as GetAnimalsService;
-use mlathromsheltermanager\sheltermanager\services\GetAnimalImages as GetAnimalImagesService;
-use mlathromsheltermanager\sheltermanager\variables\ShelterManagerVariable;
-use mlathromsheltermanager\sheltermanager\models\Settings;
-use mlathromsheltermanager\sheltermanager\utilities\SyncAnimals as SyncAnimalsUtility;
-use mlathromsheltermanager\sheltermanager\widgets\ShelterManagerStatus as ShelterManagerStatusWidget;
+namespace mlathrom\sheltermanager;
 
 use Craft;
-use craft\base\Plugin;
-use craft\services\Plugins;
-use craft\events\PluginEvent;
-use craft\web\UrlManager;
-use craft\services\Utilities;
-use craft\web\twig\variables\CraftVariable;
-use craft\services\Dashboard;
-use craft\events\RegisterComponentTypesEvent;
-use craft\events\RegisterUrlRulesEvent;
-
 use yii\base\Event;
+use craft\base\Model;
+use craft\base\Plugin;
+use yii\base\Exception;
+use craft\web\UrlManager;
+
+use craft\services\Plugins;
+use Twig\Error\LoaderError;
+use Twig\Error\SyntaxError;
+use Twig\Error\RuntimeError;
+use craft\events\PluginEvent;
+use craft\services\Dashboard;
+use craft\services\Utilities;
+use yii\caching\TagDependency;
+use craft\utilities\ClearCaches;
+use craft\events\RegisterUrlRulesEvent;
+use craft\events\RegisterCacheOptionsEvent;
+use craft\web\twig\variables\CraftVariable;
+use mlathrom\sheltermanager\models\Settings;
+
+use craft\events\RegisterComponentTypesEvent;
+use mlathrom\sheltermanager\variables\Variables;
+use mlathrom\sheltermanager\services\Api as ApiService;
 
 /**
  * Craft plugins are very much like little applications in and of themselves. We’ve made
@@ -44,8 +49,7 @@ use yii\base\Event;
  * @package   ShelterManager
  * @since     1.0.0
  *
- * @property  GetAnimalsService $getAnimals
- * @property  GetAnimalImagesService $getAnimalImages
+ * @property  ApiService $getAnimals
  * @property  Settings $settings
  * @method    Settings getSettings()
  */
@@ -60,7 +64,7 @@ class ShelterManager extends Plugin
      *
      * @var ShelterManager
      */
-    public static $plugin;
+    public static ShelterManager $plugin;
 
     // Public Properties
     // =========================================================================
@@ -85,6 +89,7 @@ class ShelterManager extends Plugin
      * @var bool
      */
     public $hasCpSection = false;
+    
 
     // Public Methods
     // =========================================================================
@@ -110,34 +115,7 @@ class ShelterManager extends Plugin
             UrlManager::class,
             UrlManager::EVENT_REGISTER_SITE_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
-                $event->rules['siteActionTrigger1'] = 'shelter-manager/sync-animals';
-            }
-        );
-
-        // Register our CP routes
-        Event::on(
-            UrlManager::class,
-            UrlManager::EVENT_REGISTER_CP_URL_RULES,
-            function (RegisterUrlRulesEvent $event) {
-                $event->rules['cpActionTrigger1'] = 'shelter-manager/sync-animals/do-something';
-            }
-        );
-
-        // Register our utilities
-        Event::on(
-            Utilities::class,
-            Utilities::EVENT_REGISTER_UTILITY_TYPES,
-            function (RegisterComponentTypesEvent $event) {
-                $event->types[] = SyncAnimalsUtility::class;
-            }
-        );
-
-        // Register our widgets
-        Event::on(
-            Dashboard::class,
-            Dashboard::EVENT_REGISTER_WIDGET_TYPES,
-            function (RegisterComponentTypesEvent $event) {
-                $event->types[] = ShelterManagerStatusWidget::class;
+                $event->rules['shelter-manager/api'] = 'shelter-manager/shelter-manager/index';
             }
         );
 
@@ -148,7 +126,7 @@ class ShelterManager extends Plugin
             function (Event $event) {
                 /** @var CraftVariable $variable */
                 $variable = $event->sender;
-                $variable->set('shelterManager', ShelterManagerVariable::class);
+                $variable->set('shelterManager', Variables::class);
             }
         );
 
@@ -157,9 +135,35 @@ class ShelterManager extends Plugin
             Plugins::class,
             Plugins::EVENT_AFTER_INSTALL_PLUGIN,
             function (PluginEvent $event) {
+            }
+        );
+
+        // Handler: Plugins::EVENT_AFTER_INSTALL_PLUGIN
+        Event::on(
+            Plugins::class,
+            Plugins::EVENT_AFTER_INSTALL_PLUGIN,
+            function (PluginEvent $event) {
                 if ($event->plugin === $this) {
-                    // We were just installed
+                    // Invalidate our caches after we've been installed
+                    $this->clearAllCaches();
                 }
+            }
+        );
+
+        // Handler: ClearCaches::EVENT_REGISTER_CACHE_OPTIONS
+        Event::on(
+            ClearCaches::class,
+            ClearCaches::EVENT_REGISTER_CACHE_OPTIONS,
+            function (RegisterCacheOptionsEvent $event) {
+                Craft::debug(
+                    'ClearCaches::EVENT_REGISTER_CACHE_OPTIONS',
+                    __METHOD__
+                );
+                // Register our caches for the Clear Cache Utility
+                $event->options = array_merge(
+                    $event->options,
+                    $this->customAdminCpCacheOptions()
+                );
             }
         );
 
@@ -191,13 +195,26 @@ class ShelterManager extends Plugin
         );
     }
 
+    /**
+     * Clear all the caches!
+     */
+    /**
+     * Invalidate all of the manifest caches
+     */
+    public static function clearAllCaches()
+    {
+        $cache = Craft::$app->getCache();
+        TagDependency::invalidate($cache, 'sheltermanager');
+        Craft::info('All animal shelter caches cleared', __METHOD__);
+    }
+
     // Protected Methods
     // =========================================================================
 
     /**
      * Creates and returns the model used to store the plugin’s settings.
      *
-     * @return \craft\base\Model|null
+     * @return Model|null
      */
     protected function createSettingsModel()
     {
@@ -209,6 +226,10 @@ class ShelterManager extends Plugin
      * block on the settings page.
      *
      * @return string The rendered settings HTML
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws Exception
      */
     protected function settingsHtml(): string
     {
@@ -218,5 +239,22 @@ class ShelterManager extends Plugin
                 'settings' => $this->getSettings()
             ]
         );
+    }
+
+    /**
+     * Returns the custom Control Panel cache options.
+     *
+     * @return array
+     */
+    protected function customAdminCpCacheOptions(): array
+    {
+        return [
+            // Shelter Manager Cache
+            [
+                'key' => 'sheltermanager',
+                'label' => Craft::t('shelter-manager', 'Shelter Manager caches'),
+                'action' => [$this, 'clearAllCaches'],
+            ],
+        ];
     }
 }

@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2021 Matt Lathrom
  */
 
-namespace mlathromsheltermanager\sheltermanager\assetbundles\sheltermanager;
+namespace mlathrom\sheltermanager\assetbundles\sheltermanager;
 
 use Craft;
 use craft\web\AssetBundle;
@@ -43,7 +43,7 @@ class ShelterManagerAsset extends AssetBundle
     public function init()
     {
         // define the path that your publishable resources live
-        $this->sourcePath = "@mlathromsheltermanager/sheltermanager/assetbundles/sheltermanager/dist";
+        $this->sourcePath = "@mlathrom/sheltermanager/assetbundles/sheltermanager/dist";
 
         // define the dependencies
         $this->depends = [

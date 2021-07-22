@@ -8,9 +8,9 @@
  * @copyright Copyright (c) 2021 Matt Lathrom
  */
 
-namespace mlathromsheltermanager\sheltermanager\models;
+namespace mlathrom\sheltermanager\models;
 
-use mlathromsheltermanager\sheltermanager\ShelterManager;
+use mlathrom\sheltermanager\ShelterManager;
 
 use Craft;
 use craft\base\Model;

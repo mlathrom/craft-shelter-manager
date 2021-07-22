@@ -8,12 +8,12 @@
  * @copyright Copyright (c) 2021 Matt Lathrom
  */
 
-namespace mlathromsheltermanager\sheltermanagertests\unit;
+namespace mlathrom\sheltermanagertests\unit;
 
 use Codeception\Test\Unit;
 use UnitTester;
 use Craft;
-use mlathromsheltermanager\sheltermanager\ShelterManager;
+use mlathrom\sheltermanager\ShelterManager;
 
 /**
  * ExampleUnitTest

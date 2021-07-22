@@ -32,7 +32,7 @@ modules:
       migrations: []
       plugins:
         shelter-manager:
-          class: '\mlathromsheltermanager\sheltermanager\ShelterManager'
+          class: '\mlathrom\sheltermanager\ShelterManager'
           handle: shelter-manager
       cleanup: true
       transaction: true

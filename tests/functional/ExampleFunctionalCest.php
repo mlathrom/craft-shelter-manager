@@ -1,6 +1,6 @@
 <?php
 
-namespace mlathromsheltermanager\sheltermanagertests\acceptance;
+namespace mlathrom\sheltermanagertests\acceptance;
 
 use Craft;
 use FunctionalTester;

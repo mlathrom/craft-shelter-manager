@@ -8,9 +8,9 @@
  * @copyright Copyright (c) 2021 Matt Lathrom
  */
 
-namespace mlathromsheltermanager\sheltermanager\controllers;
+namespace mlathrom\sheltermanager\controllers;
 
-use mlathromsheltermanager\sheltermanager\ShelterManager;
+use mlathrom\sheltermanager\ShelterManager;
 
 use Craft;
 use craft\web\Controller;
@@ -35,7 +35,7 @@ use craft\web\Controller;
  * @package   ShelterManager
  * @since     1.0.0
  */
-class SyncAnimalsController extends Controller
+class SettingsController extends Controller
 {
 
     // Protected Properties

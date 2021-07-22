@@ -8,11 +8,10 @@
  * @copyright Copyright (c) 2021 Matt Lathrom
  */
 
-namespace mlathromsheltermanager\sheltermanager\variables;
+namespace mlathrom\sheltermanager\variables;
 
-use mlathromsheltermanager\sheltermanager\ShelterManager;
-
-use Craft;
+use GuzzleHttp\Exception\GuzzleException;
+use mlathrom\sheltermanager\services\Api;
 
 /**
  * Shelter Manager Variable
@@ -26,7 +25,7 @@ use Craft;
  * @package   ShelterManager
  * @since     1.0.0
  */
-class ShelterManagerVariable
+class Variables
 {
     // Public Methods
     // =========================================================================
@@ -36,21 +35,17 @@ class ShelterManagerVariable
      * You can have as many variable functions as you want.  From any Twig template,
      * call it like this:
      *
-     *     {{ craft.shelterManager.exampleVariable }}
+     *     {{ craft.shelterManager.animals }}
      *
      * Or, if your variable requires parameters from Twig:
      *
-     *     {{ craft.shelterManager.exampleVariable(twigValue) }}
+     *     {{ craft.shelterManager.animals() }}
      *
-     * @param null $optional
-     * @return string
+     * @return array
+     * @throws GuzzleException
      */
-    public function exampleVariable($optional = null)
+    public function animals(): array
     {
-        $result = "And away we go to the Twig template...";
-        if ($optional) {
-            $result = "I'm feeling optional today...";
-        }
-        return $result;
+        return Api::instance()->getAnimals();
     }
 }
